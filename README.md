@@ -41,9 +41,10 @@ Konkuk University Embedded Software Class Sources.
 |                 | display_mod_exit | 캐릭터 디바이스 등록 해제하고, pir 타이머를 삭제하고, irq_pir을 비활성화하고, irq_pir과 irq_touch를 free_irq한다. 그리고 LED, PIR, TOUCH 모두 gpio_free한다. |
 |                 | touch_open       | 터치센서 irq를 활성화하고, 터치센서 irq가 활성화된 상태(1)인지 비활성화된 상태(0)인지 나타내는 변수인 touch_status를 1로 설정한다. |
 |                 | touch_close      | 터치센서 irq를 비활성화하고, 터치센서 irq가 활성화된 상태(1)인지 비활성화된 상태(0)인지 나타내는 변수인 touch_status를 0으로 설정한다. |
-|                 | touch_isr        | 우선 irq_pir을 비활성화 시킨 후, 터치센서를 눌렀을 시(gpio_get_value(TOUCH)가 1일 시), 터치된 상태인지 아닌지를 나타내는 변수인 touched를 1로 설정하고, 현재 거울모드인지 외부배경모드인지를 나타내는 변수인 mode_status의 값에 따라 |
-|                 | touch_mod        | 응용프로그램에서 ioctl함수로 IOCTL_STATUS_NUM cmd를 인자로 넘겼을 시, 바뀌어야하는 모드 |
-|                 |                  |                                                              |
+|                 | touch_isr        | 우선 irq_pir을 비활성화 시킨 후, 터치센서를 눌렀을 시(gpio_get_value(TOUCH)가 1일 시), 터치된 상태인지 아닌지를 나타내는 변수인 touched를 1로 설정하고, 현재 거울모드인지 외부배경모드인지를 나타내는 변수인 mode_status의 값에 따라 바꿔야할 모드 값으로 변경한다. 그리고 irq_pir을 다시 활성화 시킨다. |
+|                 | touch_mod        | 응용프로그램에서 ioctl함수로 IOCTL_STATUS_NUM cmd를 인자로 넘겼을 시, 바뀌어야하는 모드 값인 mode_status를 리턴 값으로 한다. |
+|                 | pir_isr          | 우선 irq_touch를 비활성화 시킨 후, 물체가 감지되었을 시, LED값을 1로 설정한다. 만약 터치센서 irq가 활성화된 상태인지 아닌지를 나타내는 변수인 touch_status가 0이면(비활성화 상태이면) 물체가 감지되었으므로 터치센서 irq를 활성화 시킨다. 그리고 타이머 충돌을 방지하기 위해 pir_timer를 삭제한 후, 다시 추가한다. |
+|                 | pir_timer_func   | 5초마다 이 함수가 실행되는데, 만약 PIR센서의 값이 1인 경우(FALLING), LED값을 0으로 설정한다. 만약 터치센서 irq가 활성화된 상태인지 아닌지를 나타내는 변수인 touch_status가 1이면(활성화 상태이면) 감지되는 물체가 없으므로 터치센서 irq를 비활성화 시킨다. |
 
 
 
