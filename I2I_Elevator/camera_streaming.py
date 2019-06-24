@@ -47,22 +47,22 @@ PAGE="""\
 </head>
 <body>
 <center>
-	<h1>Raspberry Pi - Surveillance Camera</h1>
+	<h1>Raspberry Pi - I2I Camera</h1>
 </center>
 <center>
 	<div class=img>
 		<div class="content">
 			<h1>hum : <span id="hum"></span></h1>
-			<h1>dust : <span id="dust"></span></h1>
+			<h1>temp : <span id="temp"></span></h1>
 			<script type="text/javascript">
 
-				function readTextDust(file){
+				function readTextTemp(file){
 					var rawFile = new XMLHttpRequest();
 					rawFile.open("GET", file, false);
 					rawFile.onreadystatechange = function(){
 							if(rawFile.status === 200 || rawFile.status == 0){
 								var allText = rawFile.responseText;
-								document.getElementById('dust').innerHTML = allText;
+								document.getElementById('temp').innerHTML = allText;
 							}
 					}
 					rawFile.send(null);
@@ -80,11 +80,11 @@ PAGE="""\
 					rawFile2.send(null);
 				}
 
-				readTextDust("/dust.txt");
+				readTextTemp("/temp.txt");
 				readTextHum("/hum.txt");
 				
 				function refreshData(){
-					readTextDust("/dust.txt");
+					readTextTemp("/temp.txt");
 					readTextHum("/hum.txt");
 				}
 
@@ -117,7 +117,7 @@ class StreamingOutput(object):
 class StreamingHandler(server.BaseHTTPRequestHandler):
     store_path = pjoin(curdir, 'file.txt')
     store_path_hum = pjoin(curdir, 'hum.txt')
-    store_path_dust = pjoin(curdir, 'dust.txt')
+    store_path_temp = pjoin(curdir, 'temp.txt')
     def do_GET(self):
         if self.path == '/':
             self.send_response(301)
@@ -129,8 +129,8 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.send_header('Content-Type', 'text')
                     self.end_headers()
                     self.wfile.write(fh.read().encode())
-        elif self.path == '/dust.txt':
-            with open(self.store_path_dust) as fh:
+        elif self.path == '/temp.txt':
+            with open(self.store_path_temp) as fh:
                     self.send_response(200)
                     self.send_header('Content-Type', 'text')
                     self.end_headers()
