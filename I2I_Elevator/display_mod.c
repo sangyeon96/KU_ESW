@@ -176,6 +176,7 @@ static int __init display_mod_init(void) {
 	}
 
 	printk("Start PIR Timer\n");
+	del_timer(&pir_timer);
 	init_timer(&pir_timer);
 
 	pir_timer.function = pir_timer_func;
